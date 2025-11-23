@@ -1,27 +1,15 @@
 import { getPool } from '../db/config';
-<<<<<<< HEAD
-import { payment } from '../types/paymentTypes'; 
-import sql from "mssql"
-
-export const PaymentRepository = {
-  async getAll(): Promise<payment[]> {
-=======
 import { Payment } from '../types/paymentTypes'; 
 import sql from "mssql"
 
 export const PaymentRepository = {
   async getAll(): Promise<Payment[]> {
->>>>>>> f8891ecc3bb2f3f8888ff3709f73bdac584364a1
     const pool = await getPool();
     const result = await pool.request().query('SELECT * FROM Payment');
     return result.recordset;
   },
 
-<<<<<<< HEAD
-  async getById(id: number): Promise<payment | null> {
-=======
   async getById(id: number): Promise<Payment | null> {
->>>>>>> f8891ecc3bb2f3f8888ff3709f73bdac584364a1
     const pool = await getPool();
     const result = await pool.request()
       .input('id', sql.Int, id)
@@ -29,11 +17,7 @@ export const PaymentRepository = {
     return result.recordset[0] || null;
   },
 
-<<<<<<< HEAD
-  async create(payment: Omit<payment, 'payment_id'>): Promise<void> {
-=======
   async create(payment: Omit<Payment, 'payment_id'>): Promise<void> {
->>>>>>> f8891ecc3bb2f3f8888ff3709f73bdac584364a1
     const pool = await getPool();
     await pool.request()
       .input('order_id', sql.Int, payment.order_id)
@@ -47,11 +31,7 @@ export const PaymentRepository = {
       `);
   },
 
-<<<<<<< HEAD
-  async update(id: number, payment: Partial<payment>): Promise<void> {
-=======
   async update(id: number, payment: Partial<Payment>): Promise<void> {
->>>>>>> f8891ecc3bb2f3f8888ff3709f73bdac584364a1
     const pool = await getPool();
     await pool.request()
       .input('id', sql.Int, id)
