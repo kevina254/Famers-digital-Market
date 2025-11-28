@@ -1,4 +1,3 @@
-// src/db/config.ts
 import dotenv from "dotenv";
 import assert from "assert";
 import sql from "mssql";

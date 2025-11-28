@@ -2,6 +2,15 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
 
+export interface AuthRequest extends Request {
+  user?: {
+    userId: number;
+    email: string;
+    role: string;
+  };
+}
+
+
 export const isAuthenticated = (req :Request, res:Response, next:NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer')){
@@ -42,5 +51,15 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     console.error("Invalid token:", error);
     res.status(403).json({ message: "Invalid or expired token" });
   }
-  
+
 };
+export const verifyFarmer = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+
+  if (req.user.role !== "farmer") {
+    return res.status(403).json({ message: "Access denied. Farmers only" });
+  }
+
+  next()};

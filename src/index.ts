@@ -15,18 +15,20 @@ const app: Application = express();
 const PORT = process.env.PORT || 5000;
 app.use(
   cors({
-    origin: "*",
-     methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "http://localhost:5173",
+    credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
-  }
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
-  )
-) 
+  
 
 
 
 // Middleware
 app.use(express.json());
+
 
 // Routes
 app.use("/api/products", productRoutes);
