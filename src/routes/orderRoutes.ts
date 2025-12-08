@@ -1,12 +1,13 @@
 import express from "express";
 import * as orderController from "../controllers/orderController";
+import { verifyToken } from "../middleware/authMiddleware";
 
+const router = express.Router();
 
+router.post("/",verifyToken, orderController.createOrder);
+router.get("/",verifyToken, orderController.getOrders);
+router.get("/:id",verifyToken, orderController.getOrderById);
+router.put("/:id", verifyToken,orderController.updateOrder);
+router.delete("/:id",verifyToken, orderController.deleteOrder);
 
-export const orderRoutes =(app:any)=>{
-app.post("/orders", orderController.createOrder);
-app.get("/orders", orderController.getOrders);
-app.get("/orders/:id", orderController.getOrderById);
-app.put("/orders/:id", orderController.updateOrder);
-app.delete("/orders/:id", orderController.deleteOrder);
-}
+export default router;

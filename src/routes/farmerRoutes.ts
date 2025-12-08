@@ -2,6 +2,7 @@ import express from 'express';
 import sql from 'mssql';
 import { getPool } from '../db/config';
 import { verifyToken, verifyFarmer, AuthRequest } from '../middleware/authMiddleware';
+import * as orderController from '../controllers/orderController';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get('/products/mine', verifyToken, verifyFarmer, async (req: AuthRequest,
     const result = await pool
       .request()
       .input('farmerId', sql.Int, farmerId)
-      .query('SELECT * FROM Products WHERE farmer_id = @farmerId');
+      .query('SELECT * FROM Product WHERE farmer_id = @farmerId');
 
     res.json(result.recordset);
   } catch (err) {
@@ -42,13 +43,13 @@ router.post('/products', verifyToken, verifyFarmer, async (req: AuthRequest, res
     await pool
       .request()
       .input('farmerId', sql.Int, farmerId)
-      .input('name', sql.VarChar, name)
-      .input('price', sql.Decimal(10, 2), price)
-      .input('quantity', sql.Int, quantity)
-      .input('description', sql.VarChar, description || '')
+      .input('product_name', sql.NVarChar(200), name)
+      .input('price', sql.Decimal(18, 2), price)
+      .input('stock_quantity', sql.Int, quantity)
+      .input('description', sql.NVarChar(1000), description || '')
       .query(
-        `INSERT INTO Products (farmer_id, name, price, quantity, description)
-         VALUES (@farmerId, @name, @price, @quantity, @description)`
+        `INSERT INTO Product (farmer_id, product_name, price, stock_quantity, description)
+         VALUES (@farmerId, @product_name, @price, @stock_quantity, @description)`
       );
 
     res.status(201).json({ message: 'Product added successfully' });
@@ -74,7 +75,7 @@ router.put('/products/:id', verifyToken, verifyFarmer, async (req: AuthRequest, 
       .request()
       .input('id', sql.Int, id)
       .input('farmerId', sql.Int, farmerId)
-      .query('SELECT * FROM Products WHERE id = @id AND farmer_id = @farmerId');
+      .query('SELECT * FROM Product WHERE product_id = @id AND farmer_id = @farmerId');
 
     if (check.recordset.length === 0) {
       return res.status(403).json({ message: 'You can only edit your own products' });
@@ -83,14 +84,14 @@ router.put('/products/:id', verifyToken, verifyFarmer, async (req: AuthRequest, 
     await pool
       .request()
       .input('id', sql.Int, id)
-      .input('name', sql.VarChar, name)
-      .input('price', sql.Decimal(10, 2), price)
-      .input('quantity', sql.Int, quantity)
-      .input('description', sql.VarChar, description || '')
+      .input('product_name', sql.NVarChar(200), name)
+      .input('price', sql.Decimal(18, 2), price)
+      .input('stock_quantity', sql.Int, quantity)
+      .input('description', sql.NVarChar(1000), description || '')
       .query(
-        `UPDATE Products
-         SET name = @name, price = @price, quantity = @quantity, description = @description
-         WHERE id = @id`
+        `UPDATE Product
+         SET product_name = @product_name, price = @price, stock_quantity = @stock_quantity, description = @description
+         WHERE product_id = @id`
       );
 
     res.json({ message: 'Product updated successfully' });
@@ -115,7 +116,7 @@ router.delete('/products/:id', verifyToken, verifyFarmer, async (req: AuthReques
       .request()
       .input('id', sql.Int, id)
       .input('farmerId', sql.Int, farmerId)
-      .query('SELECT * FROM Products WHERE id = @id AND farmer_id = @farmerId');
+      .query('SELECT * FROM Product WHERE product_id = @id AND farmer_id = @farmerId');
 
     if (check.recordset.length === 0) {
       return res.status(403).json({ message: 'You can only delete your own products' });
@@ -129,5 +130,10 @@ router.delete('/products/:id', verifyToken, verifyFarmer, async (req: AuthReques
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// -------------------------------
+// Get orders for farmer's products
+// -------------------------------
+router.get('/orders', verifyToken, verifyFarmer, orderController.getOrdersByFarmer);
 
 export default router;

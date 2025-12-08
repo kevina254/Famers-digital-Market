@@ -7,7 +7,8 @@ import authRoutes from "./routes/authRoutes";
 import paymentRoutes from "./routes/paymentRoutes"
 import marketRoutes from "./routes/marketRoutes"
 import farmerRoutes from "./routes/farmerRoutes"
-
+import orderRoutes from "./routes/orderRoutes"
+import adminRoutes from "./routes/adminRoutes"
 
 dotenv.config();
 
@@ -36,6 +37,8 @@ app.use("/api/auth", authRoutes)
 app.use("/api/payment",paymentRoutes )
 app.use("/api/market",marketRoutes)
 app.use("/api/farmer",farmerRoutes)
+app.use("/api/order",orderRoutes)
+app.use("/api/admin", adminRoutes)
 
 
 // Root route

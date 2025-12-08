@@ -12,6 +12,15 @@ export const PaymentController = {
     payment ? res.json(payment) : res.status(404).send('Payment not found');
   },
 
+  async getByUserId(req: Request, res: Response) {
+    const userId = (req as any).user?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+    const payments = await PaymentService.getByUserId(userId);
+    res.json(payments);
+  },
+
   async create(req: Request, res: Response) {
     await PaymentService.create(req.body);
     res.status(201).send('Payment created');

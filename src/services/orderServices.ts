@@ -4,8 +4,12 @@ export const createOrder = async (order: orderRepository.NewOrder) => {
   return await orderRepository.createOrder(order);
 };
 
-export const getOrders = async () => {
-  return await orderRepository.getOrders();
+export const getOrders = async (userId: number) => {
+  return await orderRepository.getOrders(userId);
+};
+
+export const getOrdersByFarmer = async (farmerId: number) => {
+  return await orderRepository.getOrdersByFarmer(farmerId);
 };
 
 export const getOrderById = async (id: number) => {

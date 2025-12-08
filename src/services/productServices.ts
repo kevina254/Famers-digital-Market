@@ -34,7 +34,7 @@ export const updateProduct = async (id: number, updatedData: any) => {
   if (!existingProduct) {
     throw new Error("Product not found");
   }
-  if (updatedData.price && updatedData.price <= 0) {
+  if (updatedData.price !== undefined && updatedData.price <= 0) {
     throw new Error("Price must be greater than zero.");
   }
 

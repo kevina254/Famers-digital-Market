@@ -17,6 +17,18 @@ export const PaymentRepository = {
     return result.recordset[0] || null;
   },
 
+  async getByUserId(userId: number): Promise<Payment[]> {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input('userId', sql.Int, userId)
+      .query(`
+        SELECT p.* FROM Payment p
+        JOIN OrderTable o ON p.order_id = o.order_id
+        WHERE o.user_id = @userId
+      `);
+    return result.recordset;
+  },
+
   async create(payment: Omit<Payment, 'payment_id'>): Promise<void> {
     const pool = await getPool();
     await pool.request()

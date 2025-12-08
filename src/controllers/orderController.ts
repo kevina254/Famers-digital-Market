@@ -14,7 +14,25 @@ export const createOrder = async (req: Request, res: Response) => {
 // READ ALL
 export const getOrders = async (req: Request, res: Response) => {
   try {
-    const orders = await orderService.getOrders();
+    const userId = (req as any).user?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+    const orders = await orderService.getOrders(userId);
+    res.status(200).json(orders);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// READ ORDERS BY FARMER
+export const getOrdersByFarmer = async (req: Request, res: Response) => {
+  try {
+    const farmerId = (req as any).user?.userId;
+    if (!farmerId) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+    const orders = await orderService.getOrdersByFarmer(farmerId);
     res.status(200).json(orders);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

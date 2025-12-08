@@ -66,7 +66,7 @@ router.post("/login", async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { userId: user.UserID, email: user.Email, role: user.role },
+      { userId: user.user_id, email: user.email, role: user.role },
       process.env.JWT_SECRET!,
       { expiresIn: "1h" }
     );
@@ -74,7 +74,7 @@ router.post("/login", async (req, res) => {
     // Return token in response body (for localStorage)
     return res.status(200).json({
       message: "Login successful",
-      token, 
+      token,
       user: {
         id: user.user_id,
         email: user.email,
